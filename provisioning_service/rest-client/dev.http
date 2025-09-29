@@ -1,0 +1,20 @@
+# Request Template
+# ### Request Label
+# [GET|POST] [REST API URL] # Request Line
+# [Request Headers][Request Body]### Request 2
+# [GET|POST] [REST API URL]
+# [Request Headers][Request Body]
+# for more details, checkout https://github.com/Huachao/vscode-restclient
+
+# Variables
+@protocol = http
+@host = localhost
+@port = 8000
+@hosturl = {{protocol}}://{{host}}:{{port}}
+@contentType = application/json
+
+### Root
+GET {{hosturl}}
+
+### Health check
+GET {{hosturl}}/health
