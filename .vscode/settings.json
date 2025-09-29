@@ -1,0 +1,16 @@
+{
+    // Enable format on save
+    "editor.formatOnSave": true,
+    // Configure Ruff as the default formatter for Python
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "always"
+        }
+    },
+    "python.testing.pytestArgs": [
+        "."
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+}
