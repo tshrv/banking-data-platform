@@ -1,0 +1,111 @@
+services:
+  bdp-provisioning-service:
+    build:
+      context: .
+      dockerfile: provisioning_service.Dockerfile
+      args:
+        REQUIREMENTS_FILE: dev
+    container_name: bdp-provisioning-service
+    ports:
+      - "8000:8000"
+
+  #   bdp-sql-db:
+  #     image: postgres:14
+  #     container_name: bdp-sql-db
+  #     restart: unless-stopped
+  #     ports:
+  #       - "5432:5432"
+  #     healthcheck:
+  #       test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+  #       interval: 10s
+  #       retries: 5
+  #       start_period: 30s
+  #       timeout: 10s
+  #     volumes:
+  #       - bdp-sql-db-data:/var/lib/postgresql/data
+  #     env_file:
+  #       - .env
+  #     environment:
+  #       - PGDATA=/var/lib/postgresql/data/pgdata
+  #       - POSTGRES_PASSWORD=${PGSQL_PASSWORD?Variable not set}
+  #       - POSTGRES_USER=${PGSQL_USER?Variable not set}
+  #       - POSTGRES_DB=${PGSQL_DB?Variable not set}
+  
+  #   bdp-sql-db-test:
+  #     image: postgres:14
+  #     container_name: bdp-sql-db-test
+  #     restart: unless-stopped
+  #     ports:
+  #       - "5433:5432"
+  #     healthcheck:
+  #       test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+  #       interval: 10s
+  #       retries: 5
+  #       start_period: 30s
+  #       timeout: 10s
+  #     volumes:
+  #       - bdp-sql-db-test-data:/var/lib/postgresql/data
+  #     env_file:
+  #       - .env
+  #     environment:
+  #       - PGDATA=/var/lib/postgresql/data/pgdata
+  #       - POSTGRES_PASSWORD=${PGSQL_PASSWORD?Variable not set}
+  #       - POSTGRES_USER=${PGSQL_USER?Variable not set}
+  #       - POSTGRES_DB=${PGSQL_DB?Variable not set}
+
+  #   bdp-pgadmin:
+  #     image: dpage/pgadmin4:8.14
+  #     container_name: bdp-pgadmin
+  #     environment:
+  #       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL?Variable not set}
+  #       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD?Variable not set}
+  #     ports:
+  #       - "8080:80"
+  #     volumes:
+  #       - bdp-pgadmin-data:/var/lib/pgadmin
+  
+    #   bdp-rabbitmq:
+    #     image: rabbitmq:4-management-alpine
+    #     container_name: bdp-rabbitmq
+    #     ports:
+    #       - "5672:5672" # RabbitMQ messaging
+    #       - "15672:15672" # Management console
+    #     environment:
+    #       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER?Variable not set}
+    #       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS?Variable not set}
+    #     volumes:
+    #       - bdp-rabbitmq-data:/var/lib/rabbitmq
+
+    #   bdp-redis:
+    #     image: redis:7.4-alpine
+    #     container_name: bdp-redis
+    #     ports:
+    #       - "6379:6379"
+    #     volumes:
+    #       - bdp-redis-data:/data
+    #     command: [ "redis-server", "--appendonly", "yes" ] # Enable AOF persistence
+    #     restart: unless-stopped
+
+    #   bdp-redisinsight:
+    #     image: redis/redisinsight:2.64
+    #     container_name: bdp-redisinsight
+    #     ports:
+    #       - "5540:5540"
+    #     restart: unless-stopped
+    #     volumes:
+    #       - bdp-redisinsight-data:/data
+
+    #   bdp-mailhog:
+    #     image: mailhog/mailhog:v1.0.1
+    #     container_name: bdp-mailhog
+    #     ports:
+    #       - "1025:1025"   # smtp
+    #       - "8025:8025"   # http
+    
+# volumes:
+#   bdp-sql-db-data:
+#   bdp-sql-db-test-data:
+#   bdp-pgadmin-data:
+#   bdp-rabbitmq-data:
+#   bdp-redis-data:
+#   bdp-redisinsight-data:
