@@ -70,7 +70,7 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest --cov=provisioning_service --cov-config=provisioning_service/.coveragerc --cov-report=term-missing --cov-fail-under=80
+          pytest ./provisioning_service --cov=provisioning_service --cov-config=provisioning_service/.coveragerc --cov-report=term-missing --cov-fail-under=80
 
   test-common-package:
     runs-on: ubuntu-latest
@@ -89,6 +89,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e common
+          pip install -r common/requirements/test.txt
 
       - name: Run tests
         run: |
