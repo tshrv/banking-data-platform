@@ -1,0 +1,104 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: ci-workflow
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  ENV: ${{ vars.ENV }}
+
+jobs:
+  linting-and-formatting:
+    runs-on: ubuntu-latest
+    environment: bdp-ps-test-env
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.12"
+
+      - name: Install ruff
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff
+
+      - name: Run ruff (Linting and Formatting)
+        run: |
+          ruff check .
+          ruff format --check .
+
+  testing:
+    runs-on: ubuntu-latest
+    needs: linting-and-formatting
+    environment: bdp-ps-test-env
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # - name: Start services
+      #   run: |
+      #     docker compose -f docker-compose.test.yaml up -d
+
+      # - name: Wait for services to accept connections
+      #   run: |
+      #     until pg_isready -h localhost -p 5432; do
+      #       echo "Waiting for PostgreSQL..."
+      #       sleep 1
+      #     done
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r provisioning_service/requirements/$ENV.txt
+
+      - name: Run tests
+        run: |
+          pytest --cov=provisioning_service --cov-config=provisioning_service/.coveragerc --cov-report=term-missing --cov-fail-under=80
+
+  vulnerability-assessment:
+    runs-on: ubuntu-latest
+    needs: testing
+    environment: bdp-ps-test-env
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install bandit==1.8.3
+
+      - name: Run security checks
+        run: |
+          bandit -r . -ll
+          bandit -r . --exit-zero
+
+  build:
+    runs-on: ubuntu-latest
+    needs: vulnerability-assessment
+    environment: bdp-ps-test-env
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the Docker image
+        run: docker build . --file provisioning_service.Dockerfile --tag bdp-provisioning-service:$(date +%s) --build-arg REQUIREMENTS_FILE=$ENV
