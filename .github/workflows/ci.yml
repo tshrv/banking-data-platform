@@ -85,9 +85,11 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install dependencies
+        run: pip install bandit==1.8.3
+
       - name: Run security checks
         run: |
-          pip install bandit==1.8.3
           bandit -r . -ll
           bandit -r . --exit-zero
 
