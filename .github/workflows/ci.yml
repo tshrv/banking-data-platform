@@ -70,7 +70,7 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest --cov=provisioning_service --cov-report=term-missing --cov-fail-under=80
+          pytest --cov=provisioning_service --cov-config=provisioning_service/.coveragerc --cov-report=term-missing --cov-fail-under=80
 
   vulnerability-assessment:
     runs-on: ubuntu-latest
@@ -101,4 +101,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build the Docker image
-        run: docker build . --file provisionsing_service.Dockerfile --tag bdp-provisioning-service:$(date +%s) --build-arg REQUIREMENTS_FILE=$ENV
+        run: docker build . --file provisioning_service.Dockerfile --tag bdp-provisioning-service:$(date +%s) --build-arg REQUIREMENTS_FILE=$ENV
