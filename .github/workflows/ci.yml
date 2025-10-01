@@ -39,7 +39,30 @@ jobs:
           ruff check .
           ruff format --check .
 
-  testing:
+  test-common-package:
+    runs-on: ubuntu-latest
+    needs: linting-and-formatting
+    environment: bdp-ps-test-env
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e common
+          pip install -r common/requirements/test.txt
+
+      - name: Run tests
+        run: |
+          pytest ./common --cov=common --cov-config=common/.coveragerc --cov-report=term-missing --cov-fail-under=80
+
+  test-provisioning-service:
     runs-on: ubuntu-latest
     needs: linting-and-formatting
     environment: bdp-ps-test-env
@@ -70,11 +93,11 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest --cov=provisioning_service --cov-config=provisioning_service/.coveragerc --cov-report=term-missing --cov-fail-under=80
+          pytest ./provisioning_service --cov=provisioning_service --cov-config=provisioning_service/.coveragerc --cov-report=term-missing --cov-fail-under=80
 
   vulnerability-assessment:
     runs-on: ubuntu-latest
-    needs: testing
+    needs: [test-provisioning-service, test-common-package]
     environment: bdp-ps-test-env
 
     steps:
@@ -93,7 +116,7 @@ jobs:
           bandit -r . -ll
           bandit -r . --exit-zero
 
-  build:
+  build-provisioning-service:
     runs-on: ubuntu-latest
     needs: vulnerability-assessment
     environment: bdp-ps-test-env

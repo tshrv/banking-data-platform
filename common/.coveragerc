@@ -1,0 +1,9 @@
+# common/.coveragerc
+[run]
+branch = True
+source = .
+
+[report]
+omit =
+    */tests/*
+    setup.py
