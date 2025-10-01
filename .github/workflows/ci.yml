@@ -39,7 +39,7 @@ jobs:
           ruff check .
           ruff format --check .
 
-  testing:
+  test-provisioning-service:
     runs-on: ubuntu-latest
     needs: linting-and-formatting
     environment: bdp-ps-test-env
@@ -97,7 +97,7 @@ jobs:
 
   vulnerability-assessment:
     runs-on: ubuntu-latest
-    needs: [testing, test-common-package]
+    needs: [test-provisioning-service, test-common-package]
     environment: bdp-ps-test-env
 
     steps:
@@ -116,7 +116,7 @@ jobs:
           bandit -r . -ll
           bandit -r . --exit-zero
 
-  build:
+  build-provisioning-service:
     runs-on: ubuntu-latest
     needs: vulnerability-assessment
     environment: bdp-ps-test-env
