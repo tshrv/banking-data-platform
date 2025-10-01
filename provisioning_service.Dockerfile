@@ -8,6 +8,9 @@ WORKDIR /bdp-ps
 COPY provisioning_service/requirements requirements
 RUN pip install -r requirements/$REQUIREMENTS_FILE.txt
 
+COPY common common
+RUN pip install ./common
+
 COPY provisioning_service provisioning_service
 
 CMD ["uvicorn", "provisioning_service.main:app", "--host", "0.0.0.0", "--port", "8000"]
