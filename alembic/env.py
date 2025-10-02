@@ -6,7 +6,7 @@ from sqlmodel import SQLModel
 from alembic import context
 
 # load all models for which you want alembic to detect changes to generate migrations
-from common import models
+from common import models  # noqa
 from common.clients.db import engine
 from common.config import settings
 
