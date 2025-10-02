@@ -19,6 +19,19 @@ services:
       - POSTGRES_DB=${POSTGRES_DB?Variable not set}
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
-  
+
+  bdp-rabbitmq-test:
+    image: rabbitmq:4-management-alpine
+    container_name: bdp-rabbitmq-test
+    ports:
+      - "5672:5672" # RabbitMQ messaging
+      - "15672:15672" # Management console
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER?Variable not set}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD?Variable not set}
+    volumes:
+      - bdp-rabbitmq-test-data:/var/lib/rabbitmq
+
 volumes:
   bdp-sql-db-test-data:
+  bdp-rabbitmq-test-data:
