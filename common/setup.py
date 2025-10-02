@@ -9,6 +9,10 @@ setup(
         "pydantic>=2.11.9",
         "pydantic-settings>=2.7.1",
         "pydantic[email]",
-        # "setuptools>=80.9.0",
-    ],  # add dependencies if needed
+        "pydantic>=2.11.9",
+        "pydantic-settings>=2.7.1",
+        "pydantic[email]",
+        "python-decouple>=3.8",
+        "sqlmodel[asyncio]>=0.0.22",
+    ],
 )

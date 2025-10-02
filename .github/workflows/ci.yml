@@ -15,11 +15,15 @@ permissions:
 
 env:
   ENV: ${{ vars.ENV }}
+  POSTGRES_DB: ${{ vars.POSTGRES_DB }}
+  POSTGRES_USER: ${{ vars.POSTGRES_USER }}
+  POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+  POSTGRES_HOST: ${{ vars.POSTGRES_HOST }}
+  POSTGRES_PORT: ${{ vars.POSTGRES_PORT }}
 
 jobs:
   linting-and-formatting:
     runs-on: ubuntu-latest
-    environment: bdp-ps-test-env
 
     steps:
       - uses: actions/checkout@v4
@@ -42,10 +46,20 @@ jobs:
   test-common-package:
     runs-on: ubuntu-latest
     needs: linting-and-formatting
-    environment: bdp-ps-test-env
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Start services
+        run: |
+          docker compose -f docker-compose.test.yaml up bdp-sql-db-test -d
+
+      - name: Wait for services to accept connections
+        run: |
+          until pg_isready -h localhost -p 5433; do
+            echo "Waiting for PostgreSQL..."
+            sleep 1
+          done
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v3
@@ -65,7 +79,6 @@ jobs:
   test-provisioning-service:
     runs-on: ubuntu-latest
     needs: linting-and-formatting
-    environment: bdp-ps-test-env
 
     steps:
       - uses: actions/checkout@v4
@@ -98,7 +111,6 @@ jobs:
   vulnerability-assessment:
     runs-on: ubuntu-latest
     needs: [test-provisioning-service, test-common-package]
-    environment: bdp-ps-test-env
 
     steps:
       - uses: actions/checkout@v4
@@ -119,7 +131,6 @@ jobs:
   build-provisioning-service:
     runs-on: ubuntu-latest
     needs: vulnerability-assessment
-    environment: bdp-ps-test-env
 
     steps:
       - uses: actions/checkout@v4
