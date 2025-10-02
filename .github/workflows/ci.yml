@@ -20,6 +20,10 @@ env:
   POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
   POSTGRES_HOST: ${{ vars.POSTGRES_HOST }}
   POSTGRES_PORT: ${{ vars.POSTGRES_PORT }}
+  RABBITMQ_USER: ${{ vars.RABBITMQ_USER }}
+  RABBITMQ_PASSWORD: ${{ secrets.RABBITMQ_PASSWORD }}
+  RABBITMQ_HOST: ${{ vars.RABBITMQ_HOST }}
+  RABBITMQ_PORT: ${{ vars.RABBITMQ_PORT }}
 
 jobs:
   linting-and-formatting:
