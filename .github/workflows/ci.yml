@@ -15,6 +15,11 @@ permissions:
 
 env:
   ENV: ${{ vars.ENV }}
+  POSTGRES_DB: ${{ vars.POSTGRES_DB }}
+  POSTGRES_USER: ${{ vars.POSTGRES_USER }}
+  POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+  POSTGRES_HOST: ${{ vars.POSTGRES_HOST }}
+  POSTGRES_PORT: ${{ vars.POSTGRES_PORT }}
 
 jobs:
   linting-and-formatting:
@@ -46,6 +51,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Start services
+        run: |
+          docker compose up bdp-sql-db-test -d
+
+      - name: Wait for services to accept connections
+        run: |
+          until pg_isready -h localhost -p 5433; do
+            echo "Waiting for PostgreSQL..."
+            sleep 1
+          done
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v3
