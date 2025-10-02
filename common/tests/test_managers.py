@@ -91,7 +91,7 @@ async def test_user_manager_validation_error(
 ):
     """Ensure that invalid data raises ValidationError"""
     with pytest.raises(ValidationError):
-        user = await UserManager(session).create_user(
+        await UserManager(session).create_user(
             User(
                 name=name,
                 date_of_birth=date_of_birth,
