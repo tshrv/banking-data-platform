@@ -20,6 +20,10 @@ env:
   POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
   POSTGRES_HOST: ${{ vars.POSTGRES_HOST }}
   POSTGRES_PORT: ${{ vars.POSTGRES_PORT }}
+  RABBITMQ_USER: ${{ vars.RABBITMQ_USER }}
+  RABBITMQ_PASSWORD: ${{ secrets.RABBITMQ_PASSWORD }}
+  RABBITMQ_HOST: ${{ vars.RABBITMQ_HOST }}
+  RABBITMQ_PORT: ${{ vars.RABBITMQ_PORT }}
 
 jobs:
   linting-and-formatting:
@@ -52,7 +56,7 @@ jobs:
 
       - name: Start services
         run: |
-          docker compose -f docker-compose.test.yaml up bdp-sql-db-test -d
+          docker compose -f docker-compose.test.yaml up bdp-sql-db-test bdp-rabbitmq-test -d
 
       - name: Wait for services to accept connections
         run: |
@@ -60,6 +64,13 @@ jobs:
             echo "Waiting for PostgreSQL..."
             sleep 1
           done
+          echo "PostgreSQL is ready!"
+
+          until docker exec bdp-rabbitmq-test rabbitmqctl status > /dev/null 2>&1; do
+            echo "Waiting for RabbitMQ..."
+            sleep 1
+          done
+          echo "RabbitMQ is ready!"
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v3
