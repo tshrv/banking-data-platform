@@ -5,6 +5,7 @@ setup(
     version="0.1.0",
     packages=find_packages(),
     install_requires=[
+        "aio-pika>=9.5.7",
         "loguru>=0.7.3",
         "pydantic>=2.11.9",
         "pydantic-settings>=2.7.1",
