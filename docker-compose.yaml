@@ -40,17 +40,17 @@ services:
     volumes:
       - bdp-pgadmin-data:/var/lib/pgadmin
   
-    #   bdp-rabbitmq:
-    #     image: rabbitmq:4-management-alpine
-    #     container_name: bdp-rabbitmq
-    #     ports:
-    #       - "5672:5672" # RabbitMQ messaging
-    #       - "15672:15672" # Management console
-    #     environment:
-    #       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER?Variable not set}
-    #       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS?Variable not set}
-    #     volumes:
-    #       - bdp-rabbitmq-data:/var/lib/rabbitmq
+  bdp-rabbitmq:
+    image: rabbitmq:4-management-alpine
+    container_name: bdp-rabbitmq
+    ports:
+      - "5672:5672" # RabbitMQ messaging
+      - "15672:15672" # Management console
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER?Variable not set}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD?Variable not set}
+    volumes:
+      - bdp-rabbitmq-data:/var/lib/rabbitmq
 
     #   bdp-redis:
     #     image: redis:7.4-alpine
@@ -81,6 +81,6 @@ services:
 volumes:
   bdp-sql-db-data:
   bdp-pgadmin-data:
-#   bdp-rabbitmq-data:
+  bdp-rabbitmq-data:
 #   bdp-redis-data:
 #   bdp-redisinsight-data:
